@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Sparkles, ShieldCheck, User as UserIcon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { ApiError } from '../services/api';
 
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
+  email: z.string().trim().email('Please enter a valid email address'),
+  password: z.string().trim().min(1, 'Password is required'),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -21,15 +21,19 @@ export function LoginPage() {
   const [authError, setAuthError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     setAuthError('');
     try {
-      await login(data.email, data.password);
+      await login(data.email.trim(), data.password.trim());
       navigate('/', { replace: true });
     } catch (err) {
       if (err instanceof ApiError) {
@@ -42,8 +46,15 @@ export function LoginPage() {
     }
   };
 
+  const handleQuickLogin = (email: string, pass: string) => {
+    setValue('email', email, { shouldValidate: true });
+    setValue('password', pass, { shouldValidate: true });
+    setAuthError('');
+    onSubmit({ email, password: pass });
+  };
+
   return (
-    <div className="min-h-screen bg-warm flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-warm flex flex-col items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
         {/* Logo area */}
         <div className="text-center mb-8">
@@ -114,7 +125,7 @@ export function LoginPage() {
 
             {/* Auth error */}
             {authError && (
-              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 animate-in fade-in">
                 <p className="text-red-600 text-sm">{authError}</p>
               </div>
             )}
@@ -136,17 +147,39 @@ export function LoginPage() {
             </button>
           </form>
 
-          {/* Demo credentials hint */}
-          <div className="mt-6 p-4 bg-soft-yellow rounded-xl border border-primary/20">
-            <p className="text-xs font-semibold text-primary-text mb-2">Demo Accounts</p>
-            <div className="space-y-1">
-              <p className="text-xs text-secondary">
-                <span className="font-medium text-primary-text">Admin:</span> admin@snackoverflow.local / Admin@Snack2024
-              </p>
-              <p className="text-xs text-secondary">
-                <span className="font-medium text-primary-text">Member:</span> arjun@snackoverflow.local / Member@Snack2024
-              </p>
+          {/* Quick Demo Accounts Buttons */}
+          <div className="mt-6 p-4 bg-soft-yellow/80 rounded-2xl border border-primary/20 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-primary-text uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles size={13} className="text-primary" />
+                Quick Demo Logins
+              </span>
+              <span className="text-[10px] text-secondary font-medium">Click to 1-click login</span>
             </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleQuickLogin('admin@snackoverflow.local', 'Admin@Snack2024')}
+                className="py-2 px-3 rounded-xl bg-white border border-primary/30 text-xs font-bold text-primary-text hover:bg-primary hover:text-white transition-all shadow-2xs flex items-center justify-center gap-1.5"
+              >
+                <ShieldCheck size={13} />
+                Admin
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleQuickLogin('arjun@snackoverflow.local', 'Member@Snack2024')}
+                className="py-2 px-3 rounded-xl bg-white border border-primary/30 text-xs font-bold text-primary-text hover:bg-primary hover:text-white transition-all shadow-2xs flex items-center justify-center gap-1.5"
+              >
+                <UserIcon size={13} />
+                Member
+              </button>
+            </div>
+
+            <p className="text-[10px] text-secondary/80 text-center pt-1 border-t border-primary/10">
+              Admin@Snack2024 · Member@Snack2024
+            </p>
           </div>
         </div>
 

@@ -14,9 +14,11 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     }
 
     const { email, password } = parsed.data;
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = password.trim();
 
     const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() },
+      where: { email: cleanEmail },
       select: {
         id: true,
         email: true,
@@ -31,7 +33,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
       throw new AuthenticationError('Invalid email or password');
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await bcrypt.compare(cleanPassword, user.password);
     if (!isValidPassword) {
       throw new AuthenticationError('Invalid email or password');
     }
