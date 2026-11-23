@@ -7,6 +7,8 @@ import rateLimit from 'express-rate-limit';
 import { config } from './config';
 import authRoutes from './routes/auth.routes';
 import snackRoutes from './routes/snack.routes';
+import requestRoutes from './routes/request.routes';
+import notificationRoutes from './routes/notification.routes';
 import { errorHandler, notFound } from './middleware/errorHandler';
 
 export const createApp = () => {
@@ -43,6 +45,8 @@ export const createApp = () => {
   // Routes
   app.use('/auth', authRoutes);
   app.use('/snacks', snackRoutes);
+  app.use('/snack-requests', requestRoutes);
+  app.use('/notifications', notificationRoutes);
 
   // Error handling
   app.use(notFound);

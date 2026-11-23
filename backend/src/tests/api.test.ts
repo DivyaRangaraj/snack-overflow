@@ -19,6 +19,8 @@ let memberId: string;
 
 beforeAll(async () => {
   // Clean up test data
+  await prisma.notification.deleteMany({});
+  await prisma.snackRequest.deleteMany({});
   await prisma.activity.deleteMany({});
   await prisma.vote.deleteMany({});
   await prisma.snack.deleteMany({});
@@ -51,6 +53,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await prisma.notification.deleteMany({});
+  await prisma.snackRequest.deleteMany({});
   await prisma.activity.deleteMany({});
   await prisma.vote.deleteMany({});
   await prisma.snack.deleteMany({});

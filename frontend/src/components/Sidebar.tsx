@@ -1,15 +1,19 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Package, LogOut, Menu, X, History,
-  ShieldCheck, User as UserIcon, Sparkles
+  ShieldCheck, User as UserIcon, Send, ClipboardList
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getUserInitials } from '../utils';
+import { NotificationCenter } from './NotificationCenter';
+import { useQuery } from '@tanstack/react-query';
+import { requestsApi } from '../services/api';
 
-const navItems = [
+const baseNavItems = [
   { label: 'Dashboard', href: '/', icon: LayoutDashboard },
   { label: 'Inventory', href: '/inventory', icon: Package },
+  { label: 'My Requests', href: '/my-requests', icon: Send },
 ];
 
 export function Sidebar() {
@@ -17,6 +21,16 @@ export function Sidebar() {
   const navigate = useNavigate();
   const { user, isAdmin, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Poll for pending requests count (Admin only)
+  const { data: adminRequestsData } = useQuery({
+    queryKey: ['admin-requests-count'],
+    queryFn: () => requestsApi.all({ status: 'PENDING', limit: 1 }),
+    enabled: isAdmin,
+    refetchInterval: 15000,
+  });
+
+  const pendingRequestsCount = adminRequestsData?.counts?.pending ?? 0;
 
   const handleLogout = () => {
     logout();
@@ -59,7 +73,7 @@ export function Sidebar() {
           </p>
         </div>
 
-        {navItems.map(({ label, href, icon: Icon }) => {
+        {baseNavItems.map(({ label, href, icon: Icon }) => {
           const isActive = location.pathname === href;
           return (
             <Link
@@ -88,6 +102,36 @@ export function Sidebar() {
                 Administration
               </p>
             </div>
+
+            {/* Snack Requests (Admin) */}
+            <Link
+              to="/admin/requests"
+              onClick={() => setMobileOpen(false)}
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 relative ${
+                location.pathname === '/admin/requests'
+                  ? 'bg-primary text-white shadow-sm'
+                  : 'text-secondary hover:bg-soft-yellow hover:text-primary-text'
+              }`}
+            >
+              <ClipboardList
+                size={18}
+                className={location.pathname === '/admin/requests' ? 'text-white' : 'text-secondary'}
+              />
+              <span>Snack Requests</span>
+              {pendingRequestsCount > 0 && (
+                <span
+                  className={`ml-auto text-[11px] font-extrabold px-2 py-0.5 rounded-full ${
+                    location.pathname === '/admin/requests'
+                      ? 'bg-white text-primary'
+                      : 'bg-primary text-white'
+                  }`}
+                >
+                  {pendingRequestsCount}
+                </span>
+              )}
+            </Link>
+
+            {/* Activity Log */}
             <Link
               to="/activity"
               onClick={() => setMobileOpen(false)}
@@ -97,7 +141,10 @@ export function Sidebar() {
                   : 'text-secondary hover:bg-soft-yellow hover:text-primary-text'
               }`}
             >
-              <History size={18} className={location.pathname === '/activity' ? 'text-white' : 'text-secondary'} />
+              <History
+                size={18}
+                className={location.pathname === '/activity' ? 'text-white' : 'text-secondary'}
+              />
               <span>Activity Log</span>
             </Link>
           </>
@@ -161,12 +208,15 @@ export function Sidebar() {
             Snack<span className="text-primary">Overflow</span>
           </span>
         </Link>
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 text-secondary hover:bg-soft-yellow rounded-xl transition-colors"
-        >
-          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-2">
+          <NotificationCenter />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="p-2 text-secondary hover:bg-soft-yellow rounded-xl transition-colors"
+          >
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer Backdrop */}

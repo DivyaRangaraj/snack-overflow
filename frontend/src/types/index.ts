@@ -4,6 +4,8 @@ export type Role = 'ADMIN' | 'MEMBER';
 export type Category = 'SWEET' | 'SAVOURY' | 'DRINK' | 'HEALTHY_ISH';
 export type StockStatus = 'STOCKED' | 'RUNNING_LOW' | 'GONE';
 export type ActionType = 'CONSUMED' | 'RESTOCKED';
+export type RequestStatus = 'PENDING' | 'APPROVED' | 'DECLINED';
+export type NotificationType = 'REQUEST_SUBMITTED' | 'REQUEST_APPROVED' | 'REQUEST_DECLINED';
 
 export interface User {
   id: string;
@@ -107,4 +109,62 @@ export interface UpdateSnackData {
 export interface AuthResponse {
   token: string;
   user: User;
+}
+
+// Snack Request types
+export interface SnackRequest {
+  id: string;
+  userId: string;
+  snackName: string;
+  category: Category;
+  reason: string | null;
+  status: RequestStatus;
+  adminId: string | null;
+  adminResponse: string | null;
+  createdAt: string;
+  reviewedAt: string | null;
+  user: Pick<User, 'id' | 'name' | 'email'>;
+  admin?: Pick<User, 'id' | 'name' | 'email'> | null;
+}
+
+export interface RequestsResponse {
+  requests: SnackRequest[];
+  counts?: {
+    pending: number;
+  };
+  pagination: PaginationMeta;
+}
+
+export interface CreateRequestData {
+  snackName: string;
+  category: Category;
+  reason?: string;
+}
+
+export interface ApproveRequestData {
+  quantity?: number;
+  lowStockThreshold?: number;
+}
+
+export interface DeclineRequestData {
+  reason: string;
+}
+
+// Notification types
+export interface Notification {
+  id: string;
+  userId: string;
+  requestId: string | null;
+  title: string;
+  message: string;
+  type: NotificationType;
+  isRead: boolean;
+  createdAt: string;
+  request?: Pick<SnackRequest, 'id' | 'snackName' | 'status' | 'category'> | null;
+}
+
+export interface NotificationsResponse {
+  notifications: Notification[];
+  unreadCount: number;
+  pagination: PaginationMeta;
 }

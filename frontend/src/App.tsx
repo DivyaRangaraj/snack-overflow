@@ -5,6 +5,8 @@ import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { InventoryPage } from './pages/InventoryPage';
 import { ActivityPage } from './pages/ActivityPage';
+import { MyRequestsPage } from './pages/MyRequestsPage';
+import { AdminRequestsPage } from './pages/AdminRequestsPage';
 
 export default function App() {
   return (
@@ -17,10 +19,12 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="inventory" element={<InventoryPage />} />
-          
-          {/* Admin-only route */}
+          <Route path="my-requests" element={<MyRequestsPage />} />
+
+          {/* Admin-only routes */}
           <Route element={<AdminRoute />}>
             <Route path="activity" element={<ActivityPage />} />
+            <Route path="admin/requests" element={<AdminRequestsPage />} />
           </Route>
         </Route>
       </Route>

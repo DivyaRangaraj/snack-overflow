@@ -27,16 +27,31 @@ enum ActionType {
   RESTOCKED
 }
 
+enum RequestStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+enum NotificationType {
+  REQUEST_SUBMITTED
+  REQUEST_APPROVED
+  REQUEST_DECLINED
+}
+
 model User {
-  id         String     @id @default(cuid())
-  name       String
-  email      String     @unique
-  password   String
-  role       Role       @default(MEMBER)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  votes      Vote[]
-  activities Activity[]
+  id               String         @id @default(cuid())
+  name             String
+  email            String         @unique
+  password         String
+  role             Role           @default(MEMBER)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  votes            Vote[]
+  activities       Activity[]
+  requests         SnackRequest[] @relation("UserRequests")
+  reviewedRequests SnackRequest[] @relation("AdminReviewedRequests")
+  notifications    Notification[]
 
   @@index([email])
 }
@@ -86,4 +101,43 @@ model Activity {
   @@index([userId])
   @@index([createdAt])
   @@index([action])
+}
+
+model SnackRequest {
+  id            String         @id @default(cuid())
+  userId        String
+  snackName     String
+  category      Category
+  reason        String?
+  status        RequestStatus  @default(PENDING)
+  adminId       String?
+  adminResponse String?
+  createdAt     DateTime       @default(now())
+  reviewedAt    DateTime?
+
+  user          User           @relation("UserRequests", fields: [userId], references: [id], onDelete: Cascade)
+  admin         User?          @relation("AdminReviewedRequests", fields: [adminId], references: [id], onDelete: SetNull)
+  notifications Notification[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  requestId String?
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  request   SnackRequest?    @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
 }

@@ -7,6 +7,15 @@ import type {
   CreateSnackData,
   UpdateSnackData,
   SnackFilters,
+  SnackRequest,
+  RequestsResponse,
+  CreateRequestData,
+  ApproveRequestData,
+  DeclineRequestData,
+  NotificationsResponse,
+  Notification,
+  RequestStatus,
+  Category,
 } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -131,6 +140,85 @@ export const snacksApi = {
     if (params.snackId) p.set('snackId', params.snackId);
     return request<ActivitiesResponse>(`/snacks/activity?${p.toString()}`);
   },
+};
+
+// --- Snack Requests ---
+export const requestsApi = {
+  create: (data: CreateRequestData) =>
+    request<SnackRequest>('/snack-requests', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  my: (params: { status?: RequestStatus | ''; page?: number; limit?: number } = {}) => {
+    const p = new URLSearchParams();
+    if (params.status) p.set('status', params.status);
+    if (params.page) p.set('page', String(params.page));
+    if (params.limit) p.set('limit', String(params.limit));
+    const qs = p.toString();
+    return request<RequestsResponse>(`/snack-requests/my${qs ? `?${qs}` : ''}`);
+  },
+
+  all: (params: {
+    status?: RequestStatus | '';
+    category?: Category | '';
+    search?: string;
+    page?: number;
+    limit?: number;
+  } = {}) => {
+    const p = new URLSearchParams();
+    if (params.status) p.set('status', params.status);
+    if (params.category) p.set('category', params.category);
+    if (params.search) p.set('search', params.search);
+    if (params.page) p.set('page', String(params.page));
+    if (params.limit) p.set('limit', String(params.limit));
+    const qs = p.toString();
+    return request<RequestsResponse>(`/snack-requests${qs ? `?${qs}` : ''}`);
+  },
+
+  get: (id: string) => request<SnackRequest>(`/snack-requests/${id}`),
+
+  approve: (id: string, data: ApproveRequestData) =>
+    request<{ message: string; request: SnackRequest; snack: Snack }>(
+      `/snack-requests/${id}/approve`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }
+    ),
+
+  decline: (id: string, data: DeclineRequestData) =>
+    request<{ message: string; request: SnackRequest }>(
+      `/snack-requests/${id}/decline`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }
+    ),
+};
+
+// --- Notifications ---
+export const notificationsApi = {
+  list: (params: { unreadOnly?: boolean; page?: number; limit?: number } = {}) => {
+    const p = new URLSearchParams();
+    if (params.unreadOnly) p.set('unreadOnly', 'true');
+    if (params.page) p.set('page', String(params.page));
+    if (params.limit) p.set('limit', String(params.limit));
+    const qs = p.toString();
+    return request<NotificationsResponse>(`/notifications${qs ? `?${qs}` : ''}`);
+  },
+
+  markAsRead: (id: string) =>
+    request<{ notification: Notification; unreadCount: number }>(
+      `/notifications/${id}/read`,
+      { method: 'PATCH' }
+    ),
+
+  markAllAsRead: () =>
+    request<{ message: string; count: number; unreadCount: number }>(
+      '/notifications/read-all',
+      { method: 'PATCH' }
+    ),
 };
 
 export { ApiError };
