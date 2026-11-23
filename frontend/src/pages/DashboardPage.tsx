@@ -163,8 +163,8 @@ export function DashboardPage() {
               </div>
               <div className="p-5">
                 <div className="flex gap-4">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-soft-yellow flex-shrink-0">
-                    <SnackImage snack={summary.snackOfTheWeek} className="w-full h-full" />
+                  <div className="w-20 h-20 rounded-xl overflow-hidden shadow-sm flex-shrink-0">
+                    <SnackImage snack={summary.snackOfTheWeek} className="w-full h-full" size="lg" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-primary-text text-sm leading-tight">{summary.snackOfTheWeek.name}</h3>
@@ -264,8 +264,8 @@ export function DashboardPage() {
               {popularData?.snacks.map((snack, i) => (
                 <div key={snack.id} className="flex items-center gap-3">
                   <span className="text-sm font-bold text-secondary w-4">{i + 1}</span>
-                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-soft-yellow flex-shrink-0">
-                    <SnackImage snack={snack} className="w-full h-full" />
+                  <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm flex-shrink-0">
+                    <SnackImage snack={snack} className="w-full h-full" size="sm" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-primary-text truncate">{snack.name}</p>

@@ -72,8 +72,8 @@ export function SnackCard({ snack, onEdit, onDelete, onRestock }: SnackCardProps
   return (
     <div className="bg-white rounded-2xl border border-border overflow-hidden hover:shadow-card transition-shadow duration-200 flex flex-col group">
       {/* Image */}
-      <div className="relative h-44 overflow-hidden bg-soft-yellow">
-        <SnackImage snack={snack} className="w-full h-full" />
+      <div className="relative h-44 overflow-hidden bg-slate-900">
+        <SnackImage snack={snack} className="w-full h-full" size="md" />
         {isGone && (
           <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
             <div className="bg-red-100 border border-red-200 rounded-xl px-3 py-1.5 text-red-600 text-xs font-semibold flex items-center gap-1">

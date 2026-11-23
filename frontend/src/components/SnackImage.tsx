@@ -1,45 +1,81 @@
 import { useState } from 'react';
 import type { Snack } from '../types';
-import { Package } from 'lucide-react';
+import { getSnackVisual } from '../utils/snackVisuals';
 
 interface SnackImageProps {
   snack: Pick<Snack, 'name' | 'category' | 'imageUrl'>;
   className?: string;
+  size?: 'sm' | 'md' | 'lg';
 }
 
-const categoryFallbacks: Record<string, string> = {
-  SWEET: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=400&q=70',
-  SAVOURY: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&q=70',
-  DRINK: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&q=70',
-  HEALTHY_ISH: 'https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=400&q=70',
-};
+export function SnackImage({ snack, className = '', size = 'md' }: SnackImageProps) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
-export function SnackImage({ snack, className = '' }: SnackImageProps) {
-  const [error, setError] = useState(false);
-  const [fallbackError, setFallbackError] = useState(false);
+  const visual = getSnackVisual(snack.name, snack.category);
+  const imageSrc = snack.imageUrl || visual.reliableImage;
 
-  const src = !error && snack.imageUrl ? snack.imageUrl : categoryFallbacks[snack.category];
+  // Render the attractive food illustration banner
+  const renderFallback = () => {
+    // If small thumbnail (w-9 h-9 or similar)
+    if (className.includes('w-9') || className.includes('w-8') || size === 'sm') {
+      return (
+        <div
+          className={`w-full h-full bg-gradient-to-br ${visual.gradient} flex items-center justify-center select-none shadow-inner`}
+        >
+          <span className="text-lg leading-none transform transition-transform group-hover:scale-110">
+            {visual.emoji}
+          </span>
+        </div>
+      );
+    }
 
-  if (fallbackError) {
+    // Medium/Large Card presentation
     return (
-      <div className={`bg-soft-yellow flex items-center justify-center ${className}`}>
-        <Package size={32} className="text-primary/40" />
+      <div
+        className={`w-full h-full bg-gradient-to-br ${visual.gradient} relative overflow-hidden flex flex-col items-center justify-center p-3 select-none text-white`}
+      >
+        {/* Decorative soft glow rings */}
+        <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
+        <div className="absolute -bottom-8 -left-8 w-28 h-28 rounded-full bg-black/20 blur-lg pointer-events-none" />
+
+        {/* Centerpiece 3D Emoji Icon */}
+        <div className="relative z-10 flex flex-col items-center text-center">
+          <span className="text-5xl filter drop-shadow-md mb-2 transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+            {visual.emoji}
+          </span>
+          <span className="text-[11px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-black/25 backdrop-blur-sm text-white/90 border border-white/10 max-w-[90%] truncate">
+            {visual.tag}
+          </span>
+        </div>
       </div>
     );
-  }
+  };
 
   return (
-    <img
-      src={src}
-      alt={snack.name}
-      className={`object-cover ${className}`}
-      onError={() => {
-        if (!error) {
-          setError(true);
-        } else {
-          setFallbackError(true);
-        }
-      }}
-    />
+    <div className={`relative overflow-hidden bg-slate-900 ${className}`}>
+      {/* If the image failed or hasn't loaded yet, show the attractive styled food card */}
+      {(!imageLoaded || imageError) && (
+        <div className="absolute inset-0 z-0">
+          {renderFallback()}
+        </div>
+      )}
+
+      {/* Real photo overlay with smooth fade-in */}
+      {!imageError && imageSrc && (
+        <img
+          src={imageSrc}
+          alt={snack.name}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          crossOrigin="anonymous"
+          onLoad={() => setImageLoaded(true)}
+          onError={() => setImageError(true)}
+          className={`w-full h-full object-cover transition-opacity duration-300 relative z-10 ${
+            imageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      )}
+    </div>
   );
 }
