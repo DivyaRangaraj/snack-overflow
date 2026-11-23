@@ -10,10 +10,9 @@ import { NotificationCenter } from './NotificationCenter';
 import { useQuery } from '@tanstack/react-query';
 import { requestsApi } from '../services/api';
 
-const baseNavItems = [
+const commonNavItems = [
   { label: 'Dashboard', href: '/', icon: LayoutDashboard },
   { label: 'Inventory', href: '/inventory', icon: Package },
-  { label: 'My Requests', href: '/my-requests', icon: Send },
 ];
 
 export function Sidebar() {
@@ -73,7 +72,8 @@ export function Sidebar() {
           </p>
         </div>
 
-        {baseNavItems.map(({ label, href, icon: Icon }) => {
+        {/* Dashboard & Inventory (Available for Everyone) */}
+        {commonNavItems.map(({ label, href, icon: Icon }) => {
           const isActive = location.pathname === href;
           return (
             <Link
@@ -95,6 +95,26 @@ export function Sidebar() {
           );
         })}
 
+        {/* My Requests (Members Only) */}
+        {!isAdmin && (
+          <Link
+            to="/my-requests"
+            onClick={() => setMobileOpen(false)}
+            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 relative ${
+              location.pathname === '/my-requests'
+                ? 'bg-primary text-white shadow-sm'
+                : 'text-secondary hover:bg-soft-yellow hover:text-primary-text'
+            }`}
+          >
+            <Send size={18} className={location.pathname === '/my-requests' ? 'text-white' : 'text-secondary'} />
+            <span>My Requests</span>
+            {location.pathname === '/my-requests' && (
+              <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white" />
+            )}
+          </Link>
+        )}
+
+        {/* Administration Section (Admins Only) */}
         {isAdmin && (
           <>
             <div className="px-3 pt-4 pb-2">
@@ -103,7 +123,7 @@ export function Sidebar() {
               </p>
             </div>
 
-            {/* Snack Requests (Admin) */}
+            {/* Snack Requests (Admin Overview & Approvals) */}
             <Link
               to="/admin/requests"
               onClick={() => setMobileOpen(false)}

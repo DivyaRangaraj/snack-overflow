@@ -37,6 +37,8 @@ export const SNACK_SLUGS: Record<string, string> = {
   'Mixture': 'mixture',
   'Roasted Chana': 'roasted-chana',
   'Nachos': 'nachos',
+  'Pringles': 'pringles',
+  'Pringles Original': 'pringles',
 
   // DRINKS
   'Coca-Cola': 'coca-cola',
@@ -338,6 +340,30 @@ export const SNACK_VISUALS: Record<string, SnackVisualInfo> = {
     description: 'Crispy stone-ground corn tortilla chips coated in bold nacho cheese seasoning.',
     netWeight: '82g',
     calories: '410 kcal',
+  },
+  'Pringles': {
+    slug: 'pringles',
+    emoji: '🥔',
+    gradient: 'from-[#dc2626] to-[#7f1d1d]',
+    bgLight: '#fee2e2',
+    accent: '#f87171',
+    tag: 'Original Potato Crisps',
+    reliableImage: '/snacks/pringles.svg',
+    description: 'Iconic stackable potato crisps seasoned to perfection in a signature cylindrical canister.',
+    netWeight: '107g',
+    calories: '535 kcal',
+  },
+  'Pringles Original': {
+    slug: 'pringles',
+    emoji: '🥔',
+    gradient: 'from-[#dc2626] to-[#7f1d1d]',
+    bgLight: '#fee2e2',
+    accent: '#f87171',
+    tag: 'Original Potato Crisps',
+    reliableImage: '/snacks/pringles.svg',
+    description: 'Iconic stackable potato crisps seasoned to perfection in a signature cylindrical canister.',
+    netWeight: '107g',
+    calories: '535 kcal',
   },
 
   // DRINKS

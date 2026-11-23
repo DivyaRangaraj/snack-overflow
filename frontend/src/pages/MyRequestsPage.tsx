@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import {
   Plus, Clock, CheckCircle2, XCircle, Send, X,
-  AlertCircle, Sparkles, MessageSquare, ShieldCheck, Loader2
+  AlertCircle, Sparkles, MessageSquare, ShieldCheck, Loader2, ArrowRight
 } from 'lucide-react';
 import { requestsApi, ApiError } from '../services/api';
 import type { SnackRequest, Category, RequestStatus } from '../types';
 import { CategoryBadge } from '../components/Badges';
 import { formatRelativeTime } from '../utils';
+import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const STATUS_FILTERS: Array<{ label: string; value: RequestStatus | '' }> = [
@@ -25,6 +27,7 @@ const CATEGORY_OPTIONS: Array<{ label: string; value: Category; emoji: string }>
 ];
 
 export function MyRequestsPage() {
+  const { isAdmin } = useAuth();
   const [statusFilter, setStatusFilter] = useState<RequestStatus | ''>('');
   const [modalOpen, setModalOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -58,6 +61,24 @@ export function MyRequestsPage() {
           Request a Snack
         </button>
       </div>
+
+      {/* Admin Information Banner */}
+      {isAdmin && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-amber-900 shadow-xs">
+          <div className="flex items-center gap-2">
+            <ShieldCheck size={18} className="text-amber-600 flex-shrink-0" />
+            <span>
+              <strong>Administrator Note:</strong> To manage, approve, or decline employee requests, visit the <strong>Snack Requests</strong> management panel.
+            </span>
+          </div>
+          <Link
+            to="/admin/requests"
+            className="px-3.5 py-1.5 rounded-xl bg-amber-600 text-white font-bold hover:bg-amber-700 whitespace-nowrap transition-colors flex items-center gap-1 self-start sm:self-auto"
+          >
+            Manage Requests <ArrowRight size={13} />
+          </Link>
+        </div>
+      )}
 
       {/* Filter Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
