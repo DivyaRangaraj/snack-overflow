@@ -318,3 +318,33 @@ npm test
   - Users cannot mark another user's notifications as read (HTTP 403).
   - Marking single notification as read updates unread counter.
   - Bulk "mark all as read" resets unread counter to 0.
+
+---
+
+## 📐 System Design Notes & Scaling Analysis
+
+### 1. Key Architectural Decisions
+- **Database-Level Atomic Conditional Decrements:** Rather than relying on application-level locks or separate Redis caches for inventory count, we leverage PostgreSQL's conditional row update: `UPDATE "Snack" SET quantity = quantity - $amount WHERE id = $id AND quantity >= $amount`. This provides strict ACID guarantees, eliminates race conditions under concurrent requests, and prevents negative inventory without distributed locking overhead.
+- **Dynamic Derived State:** Stock status (`STOCKED`, `RUNNING_LOW`, `GONE`) is computed dynamically based on the current `quantity` and `lowStockThreshold`. By avoiding storing stock status as a static column, we eliminate data desynchronization, stale caches, and redundant write operations.
+- **Local Packaging Packshot Architecture:** Instead of depending on third-party image CDNs (which suffer from rate-limiting, referrer policies, and CORS blocks), all 40+ snack packshots are custom-designed SVGs hosted locally. This ensures 100% availability, instant load times, zero external network calls, and crisp rendering on high-DPI displays.
+- **Transactional Approval & Decline Workflows:** Snack request reviews execute inside PostgreSQL transactions (`prisma.$transaction`). An approval creates the inventory snack, updates request state, logs restock activity, and publishes a member notification atomically, ensuring no partial failure states.
+
+### 2. Trade-offs
+- **PostgreSQL Row Locks vs. In-Memory Queue (Redis/RabbitMQ):**
+  - *Trade-off:* We prioritized 100% data correctness and simplicity by using PostgreSQL row-level locks rather than introducing an in-memory queue.
+  - *Context:* For office pantry scales (hundreds of requests per minute), Postgres handles requests with single-digit millisecond latency. The trade-off is that extreme bursts on a single row cause lock queuing.
+- **Client Polling vs. WebSockets for Notifications:**
+  - *Trade-off:* We chose periodic auto-polling (10-second intervals via TanStack Query) over WebSockets.
+  - *Context:* Polling keeps the backend completely stateless, avoiding sticky sessions, WebSocket connection management, and socket reconnection logic while delivering near-instant updates for standard pantry usage.
+- **Composite Unique Constraints vs. Soft-Checking:**
+  - *Trade-off:* We enforce vote uniqueness with `@@unique([userId, snackId])` and pending request uniqueness with database-level checks. This guarantees that duplicate votes can never be inserted even if frontend or backend validations were bypassed.
+
+### 3. What Would Break First at 100× the Scale (and How to Scale It)
+
+| Bottleneck | What Breaks at 100× Scale | Failure Mode | Scaling Remedy |
+|---|---|---|---|
+| **Hot Row Lock Contention** | 10,000+ employees simultaneously consuming the last 10 units of a trending snack. | High row-lock wait queues in PostgreSQL, transaction timeout errors, and connection pool exhaustion. | Introduce a **Redis distributed counter** with atomic Lua scripts (`DECRBY`) to absorb the traffic burst, persisting consumption events to PostgreSQL asynchronously via a **BullMQ / Kafka** write-behind queue. |
+| **Database Connection Limits** | Hundreds of Express server instances opening direct pooled connections. | `FATAL: remaining connection slots are reserved for non-superuser connections`. | Deploy **PgBouncer** in transaction pooling mode in front of PostgreSQL, reducing database connection footprint by 90%+. |
+| **Read Query Load on Inventory** | Thousands of concurrent users loading `/snacks` and `/snacks/summary`. | Primary database CPU spikes from repeated aggregation queries. | Add **PostgreSQL Read Replicas** for read queries (`GET /snacks`, `/snacks/popular`) and cache catalog responses in **Redis** with TTL invalidation on mutations. |
+| **HTTP Polling Overhead** | 10,000 connected clients polling `/notifications` every 10s = 1,000 req/sec continuous load. | Server CPU and database read saturation just checking for empty notification changes. | Migrate from client polling to **Server-Sent Events (SSE)** or **WebSockets** backed by **Redis Pub/Sub** for push-based notification delivery. |
+| **Leaderboard / Aggregation Queries** | Dynamic calculation of "Snack of the Week" aggregating trailing 7 days of votes on every request. | Slow sequential table scans as the `Vote` table grows into millions of rows. | Use a **Redis Sorted Set** (`ZINCRBY`) for real-time weekly vote tracking, or create a PostgreSQL **Materialized View** refreshed periodically via `pg_cron`. |
