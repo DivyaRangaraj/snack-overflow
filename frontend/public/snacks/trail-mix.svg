@@ -35,7 +35,7 @@
           True Elements
         </text>
         <text x="95" y="112" font-family="'Inter',sans-serif" font-size="10" font-weight="800" fill="#27272a" text-anchor="middle" letter-spacing="0.5">
-          Berries & Seeds Trail Mix
+          Berries &amp; Seeds Trail Mix
         </text>
         
         <!-- Product illustration showcase circle -->
@@ -47,7 +47,7 @@
         
         <!-- Tagline -->
         <text x="95" y="208" font-family="'Inter',sans-serif" font-size="8.5" font-weight="700" fill="#ffffff" text-anchor="middle" opacity="0.9">
-          Cranberry, Pumpkin & Nuts
+          Cranberry, Pumpkin &amp; Nuts
         </text>
       </g>
     

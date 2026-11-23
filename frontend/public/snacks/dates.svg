@@ -47,7 +47,7 @@
         
         <!-- Tagline -->
         <text x="95" y="208" font-family="'Inter',sans-serif" font-size="8.5" font-weight="700" fill="#ffffff" text-anchor="middle" opacity="0.9">
-          Naturally Sweet & Soft
+          Naturally Sweet &amp; Soft
         </text>
       </g>
     

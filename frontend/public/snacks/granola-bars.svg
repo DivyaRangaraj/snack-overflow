@@ -38,7 +38,7 @@
           Nature Valley
         </text>
         <text x="155" y="75" font-family="'Inter',-apple-system,sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="0.5" opacity="0.95">
-          Oats & Dark Chocolate Bar
+          Oats &amp; Dark Chocolate Bar
         </text>
         
         <!-- Food Emoji Badge -->
