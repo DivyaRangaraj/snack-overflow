@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <radialGradient id="studio-bg" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="70%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#f1f5f9" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Studio White/Grey Neutral Backing -->
+  <rect width="400" height="300" fill="url(#studio-bg)" />
+  
+  <!-- Subtle category accent light in background -->
+  <circle cx="200" cy="140" r="110" fill="#ea580c" opacity="0.08" filter="blur(30px)" />
+  
+  
+      <!-- Shadow -->
+      <ellipse cx="200" cy="265" rx="50" ry="9" fill="#000000" opacity="0.16" filter="blur(6px)" />
+      
+      <!-- Bottle -->
+      <g transform="translate(145, 25)">
+        <!-- Cap -->
+        <rect x="42" y="0" width="26" height="18" rx="3" fill="#0284c7" stroke="#000000" stroke-width="0.5" opacity="0.95" />
+        <!-- Neck -->
+        <path d="M46 18 L64 18 L75 60 L35 60 Z" fill="#ea580c" opacity="0.85" />
+        
+        <!-- Body -->
+        <rect x="22" y="60" width="66" height="175" rx="16" fill="#ea580c" filter="drop-shadow(0 12px 16px rgba(0,0,0,0.2))" />
+        
+        <!-- Bottle shine -->
+        <rect x="28" y="65" width="8" height="165" fill="#ffffff" opacity="0.3" rx="4" />
+        
+        <!-- Label -->
+        <rect x="20" y="100" width="70" height="75" rx="4" fill="#ffffff" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.15))" />
+        <text x="55" y="125" font-family="'Inter',sans-serif" font-size="15" font-weight="900" fill="#ea580c" text-anchor="middle">
+          Fanta
+        </text>
+        <text x="55" y="140" font-family="'Inter',sans-serif" font-size="7.5" font-weight="700" fill="#475569" text-anchor="middle">
+          Sparkling Orange
+        </text>
+        <text x="55" y="162" font-size="18" text-anchor="middle">🍊</text>
+        
+        <!-- Volume -->
+        <text x="55" y="215" font-family="'Inter',sans-serif" font-size="9" font-weight="800" fill="#ffffff" text-anchor="middle">
+          500 ml
+        </text>
+      </g>
+    
+</svg>

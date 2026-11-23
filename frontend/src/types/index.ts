@@ -47,6 +47,7 @@ export interface Activity {
 
 export interface PaginationMeta {
   total: number;
+  overallTotal?: number;
   page: number;
   limit: number;
   totalPages: number;

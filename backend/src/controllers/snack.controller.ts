@@ -137,9 +137,10 @@ export async function getSnacks(req: Request, res: Response, next: NextFunction)
     else if (sort === 'votes') orderBy = { votes: { _count: 'desc' } };
 
     const userId = req.user?.id || '';
+    const overallTotal = await prisma.snack.count();
 
-    // If filtering by RUNNING_LOW status, post-filter since threshold varies per snack
-    if (status === 'RUNNING_LOW') {
+    // If filtering by derived status (STOCKED or RUNNING_LOW), threshold varies per snack
+    if (status === 'RUNNING_LOW' || status === 'STOCKED') {
       const allSnacks = await prisma.snack.findMany({
         where: { ...where, quantity: { gt: 0 } },
         include: {
@@ -149,9 +150,9 @@ export async function getSnacks(req: Request, res: Response, next: NextFunction)
         orderBy,
       });
 
-      const filtered = allSnacks.filter(
-        (s) => s.quantity > 0 && s.quantity <= s.lowStockThreshold
-      );
+      const filtered = status === 'RUNNING_LOW'
+        ? allSnacks.filter((s) => s.quantity > 0 && s.quantity <= s.lowStockThreshold)
+        : allSnacks.filter((s) => s.quantity > s.lowStockThreshold);
 
       const total = filtered.length;
       const paginated = filtered.slice(skip, skip + parsedLimit);
@@ -167,9 +168,10 @@ export async function getSnacks(req: Request, res: Response, next: NextFunction)
         })),
         pagination: {
           total,
+          overallTotal,
           page: parsedPage,
           limit: parsedLimit,
-          totalPages: Math.ceil(total / parsedLimit),
+          totalPages: Math.max(1, Math.ceil(total / parsedLimit)),
         },
       });
       return;
@@ -189,14 +191,8 @@ export async function getSnacks(req: Request, res: Response, next: NextFunction)
       prisma.snack.count({ where }),
     ]);
 
-    // Post-filter STOCKED: quantity > lowStockThreshold
-    let result = snacks;
-    if (status === 'STOCKED') {
-      result = snacks.filter((s) => s.quantity > s.lowStockThreshold);
-    }
-
     res.json({
-      snacks: result.map((s) => ({
+      snacks: snacks.map((s) => ({
         ...s,
         stockStatus: getStockStatus(s.quantity, s.lowStockThreshold),
         voteCount: s._count.votes,
@@ -205,10 +201,11 @@ export async function getSnacks(req: Request, res: Response, next: NextFunction)
         _count: undefined,
       })),
       pagination: {
-        total: status === 'STOCKED' ? result.length : total,
+        total,
+        overallTotal,
         page: parsedPage,
         limit: parsedLimit,
-        totalPages: Math.ceil((status === 'STOCKED' ? result.length : total) / parsedLimit),
+        totalPages: Math.max(1, Math.ceil(total / parsedLimit)),
       },
     });
   } catch (err) {
@@ -337,7 +334,7 @@ export async function deleteSnack(req: Request, res: Response, next: NextFunctio
     await prisma.vote.deleteMany({ where: { snackId: id } });
     await prisma.snack.delete({ where: { id } });
 
-    res.json({ message: 'Snack deleted successfully.' });
+    res.status(204).send();
   } catch (err) {
     next(err);
   }

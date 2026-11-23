@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Package, LogOut, ChevronDown, Menu, X, Settings
+  LayoutDashboard, Package, LogOut, Menu, X, History,
+  ShieldCheck, User as UserIcon, Sparkles
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
@@ -23,22 +24,41 @@ export function Sidebar() {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full">
-      {/* Logo */}
+    <div className="flex flex-col h-full bg-white select-none">
+      {/* Brand Logo */}
       <div className="px-6 py-5 border-b border-border">
-        <Link to="/" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">S</span>
+        <Link
+          to="/"
+          className="flex items-center gap-3 group"
+          onClick={() => setMobileOpen(false)}
+        >
+          <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-200">
+            <span className="text-white font-black text-base">S</span>
           </div>
           <div>
-            <span className="font-bold text-primary-text text-base leading-none">Snack</span>
-            <span className="font-bold text-primary text-base leading-none">Overflow</span>
+            <div className="flex items-center gap-1.5">
+              <span className="font-extrabold text-primary-text text-base tracking-tight leading-none">
+                Snack
+              </span>
+              <span className="font-extrabold text-primary text-base tracking-tight leading-none">
+                Overflow
+              </span>
+            </div>
+            <p className="text-[10px] text-secondary font-semibold uppercase tracking-wider mt-1">
+              Office Pantry System
+            </p>
           </div>
         </Link>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      {/* Main Navigation */}
+      <div className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
+        <div className="px-3 pb-2">
+          <p className="text-[11px] font-bold text-secondary uppercase tracking-wider">
+            Menu
+          </p>
+        </div>
+
         {navItems.map(({ label, href, icon: Icon }) => {
           const isActive = location.pathname === href;
           return (
@@ -46,62 +66,84 @@ export function Sidebar() {
               key={href}
               to={href}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 relative ${
                 isActive
                   ? 'bg-primary text-white shadow-sm'
                   : 'text-secondary hover:bg-soft-yellow hover:text-primary-text'
               }`}
             >
-              <Icon size={18} />
-              {label}
+              <Icon size={18} className={isActive ? 'text-white' : 'text-secondary'} />
+              <span>{label}</span>
+              {isActive && (
+                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white" />
+              )}
             </Link>
           );
         })}
+
         {isAdmin && (
-          <Link
-            to="/activity"
-            onClick={() => setMobileOpen(false)}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
-              location.pathname === '/activity'
-                ? 'bg-primary text-white shadow-sm'
-                : 'text-secondary hover:bg-soft-yellow hover:text-primary-text'
-            }`}
-          >
-            <Settings size={18} />
-            Activity Log
-          </Link>
+          <>
+            <div className="px-3 pt-4 pb-2">
+              <p className="text-[11px] font-bold text-secondary uppercase tracking-wider">
+                Administration
+              </p>
+            </div>
+            <Link
+              to="/activity"
+              onClick={() => setMobileOpen(false)}
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 ${
+                location.pathname === '/activity'
+                  ? 'bg-primary text-white shadow-sm'
+                  : 'text-secondary hover:bg-soft-yellow hover:text-primary-text'
+              }`}
+            >
+              <History size={18} className={location.pathname === '/activity' ? 'text-white' : 'text-secondary'} />
+              <span>Activity Log</span>
+            </Link>
+          </>
         )}
-      </nav>
+      </div>
 
-      {/* Role badge */}
-      {isAdmin && (
-        <div className="px-4 pb-2">
-          <div className="bg-primary/10 border border-primary/20 rounded-lg px-3 py-2">
-            <p className="text-xs font-medium text-primary">Administrator</p>
-            <p className="text-xs text-secondary">Full access enabled</p>
-          </div>
-        </div>
-      )}
+      {/* User Profile Card */}
+      <div className="p-3 border-t border-border bg-warm/30">
+        <div className="bg-white rounded-2xl border border-border p-3 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-10 h-10 rounded-xl bg-soft-yellow border border-primary/20 flex items-center justify-center flex-shrink-0 text-primary font-extrabold text-sm shadow-xs">
+                {user ? getUserInitials(user.name) : 'U'}
+              </div>
+              <span
+                className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
+                  isAdmin ? 'bg-primary' : 'bg-green-500'
+                }`}
+              />
+            </div>
 
-      {/* User */}
-      <div className="px-3 py-4 border-t border-border">
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-soft-yellow transition-colors">
-          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-xs font-bold">
-              {user ? getUserInitials(user.name) : 'U'}
-            </span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-primary-text truncate" title={user?.name}>
+                {user?.name}
+              </p>
+              <div className="flex items-center gap-1 mt-0.5">
+                {isAdmin ? (
+                  <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-soft-yellow px-1.5 py-0.2 rounded-md">
+                    <ShieldCheck size={10} /> Admin
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-green-700 bg-green-50 px-1.5 py-0.2 rounded-md">
+                    <UserIcon size={10} /> Member
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <button
+              onClick={handleLogout}
+              className="p-2 text-secondary hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors flex-shrink-0"
+              title="Sign Out"
+            >
+              <LogOut size={16} />
+            </button>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-primary-text truncate">{user?.name}</p>
-            <p className="text-xs text-secondary truncate">{user?.email}</p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="p-1.5 text-secondary hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-            title="Sign out"
-          >
-            <LogOut size={16} />
-          </button>
         </div>
       </div>
     </div>
@@ -109,44 +151,45 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-border px-4 py-3 flex items-center justify-between">
+      {/* Mobile Header Bar */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-border px-4 py-3 flex items-center justify-between shadow-xs">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-xs">S</span>
           </div>
-          <span className="font-bold text-primary-text text-sm">Snack<span className="text-primary">Overflow</span></span>
+          <span className="font-bold text-primary-text text-sm">
+            Snack<span className="text-primary">Overflow</span>
+          </span>
         </Link>
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 text-secondary hover:bg-soft-yellow rounded-lg transition-colors"
+          className="p-2 text-secondary hover:bg-soft-yellow rounded-xl transition-colors"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
-      {/* Mobile overlay */}
+      {/* Mobile Drawer Backdrop */}
       {mobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-20 bg-black/40"
+          className="lg:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-xs transition-opacity"
           onClick={() => setMobileOpen(false)}
         />
       )}
 
-      {/* Mobile drawer */}
+      {/* Mobile Drawer */}
       <div
-        className={`lg:hidden fixed top-0 left-0 bottom-0 z-25 w-64 bg-white shadow-xl transition-transform duration-300 ${
+        className={`lg:hidden fixed top-0 left-0 bottom-0 z-50 w-72 bg-white shadow-2xl transition-transform duration-300 ease-in-out ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
-        style={{ zIndex: 25 }}
       >
         <SidebarContent />
       </div>
 
-      {/* Desktop sidebar */}
-      <div className="hidden lg:flex flex-col w-60 xl:w-64 bg-white border-r border-border fixed top-0 left-0 bottom-0 z-10">
+      {/* Desktop Persistent Sidebar */}
+      <aside className="hidden lg:flex flex-col w-60 xl:w-64 bg-white border-r border-border fixed top-0 left-0 bottom-0 z-10">
         <SidebarContent />
-      </div>
+      </aside>
     </>
   );
 }

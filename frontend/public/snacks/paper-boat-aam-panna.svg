@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <radialGradient id="studio-bg" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="70%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#f1f5f9" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Studio White/Grey Neutral Backing -->
+  <rect width="400" height="300" fill="url(#studio-bg)" />
+  
+  <!-- Subtle category accent light in background -->
+  <circle cx="200" cy="140" r="110" fill="#4d7c0f" opacity="0.08" filter="blur(30px)" />
+  
+  
+      <!-- Shadow -->
+      <ellipse cx="200" cy="265" rx="65" ry="10" fill="#000000" opacity="0.16" filter="blur(6px)" />
+      
+      <g transform="translate(120, 35)">
+        <rect x="15" y="15" width="130" height="210" rx="12" fill="#4d7c0f" filter="drop-shadow(0 10px 16px rgba(0,0,0,0.22))" />
+        
+        <!-- Cap on top -->
+        <circle cx="80" cy="15" r="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
+        
+        <!-- Glass shine -->
+        <rect x="25" y="25" width="12" height="190" fill="#ffffff" opacity="0.2" rx="4" />
+        
+        <!-- Label Area -->
+        <rect x="22" y="55" width="116" height="120" rx="8" fill="#ffffff" opacity="0.95" />
+        <text x="80" y="85" font-family="'Inter',sans-serif" font-size="18" font-weight="900" fill="#fef08a" text-anchor="middle">
+          Paper Boat
+        </text>
+        <text x="80" y="105" font-family="'Inter',sans-serif" font-size="9" font-weight="700" fill="#334155" text-anchor="middle">
+          Aam Panna
+        </text>
+        <text x="80" y="145" font-size="34" text-anchor="middle">🥭</text>
+        
+        <text x="80" y="205" font-family="'Inter',sans-serif" font-size="9" font-weight="800" fill="#ffffff" text-anchor="middle">
+          Raw Mango Nostalgia
+        </text>
+      </g>
+    
+</svg>

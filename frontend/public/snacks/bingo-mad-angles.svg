@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <radialGradient id="studio-bg" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="70%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#f1f5f9" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Studio White/Grey Neutral Backing -->
+  <rect width="400" height="300" fill="url(#studio-bg)" />
+  
+  <!-- Subtle category accent light in background -->
+  <circle cx="200" cy="140" r="110" fill="#ea580c" opacity="0.08" filter="blur(30px)" />
+  
+  
+      <!-- Shadow -->
+      <ellipse cx="200" cy="265" rx="85" ry="12" fill="#000000" opacity="0.15" filter="blur(6px)" />
+      
+      <!-- Packet body -->
+      <g transform="translate(105, 30)">
+        <!-- Top crimp seal -->
+        <path d="M0 0 L190 0 L185 18 L5 18 Z" fill="#ea580c" filter="brightness(0.9)" />
+        <line x1="5" y1="9" x2="185" y2="9" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4" />
+        
+        <!-- Bag shape -->
+        <path d="M5 18 Q-5 120 12 215 L178 215 Q195 120 185 18 Z" fill="#ea580c" filter="drop-shadow(0 12px 18px rgba(0,0,0,0.22))" />
+        
+        <!-- Gloss highlight streak -->
+        <path d="M22 25 Q12 120 28 205" stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.2" />
+        
+        <!-- Center brand seal -->
+        <ellipse cx="95" cy="95" rx="70" ry="42" fill="#ffffff" opacity="0.96" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.15))" />
+        <text x="95" y="92" font-family="'Inter',sans-serif" font-size="24" font-weight="900" fill="#facc15" text-anchor="middle" letter-spacing="0.5">
+          BINGO!
+        </text>
+        <text x="95" y="112" font-family="'Inter',sans-serif" font-size="10" font-weight="800" fill="#27272a" text-anchor="middle" letter-spacing="0.5">
+          Mad Angles Achaari
+        </text>
+        
+        <!-- Product illustration showcase circle -->
+        <circle cx="95" cy="165" r="32" fill="#ffffff" opacity="0.2" />
+        <text x="95" y="177" font-size="36" text-anchor="middle">📐</text>
+        
+        <!-- Bottom crimp seal -->
+        <path d="M12 215 L178 215 L173 228 L17 228 Z" fill="#ea580c" filter="brightness(0.85)" />
+        
+        <!-- Tagline -->
+        <text x="95" y="208" font-family="'Inter',sans-serif" font-size="8.5" font-weight="700" fill="#ffffff" text-anchor="middle" opacity="0.9">
+          Crispy Triangles
+        </text>
+      </g>
+    
+</svg>
