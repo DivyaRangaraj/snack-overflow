@@ -16,8 +16,25 @@ export const createApp = () => {
 
   // Security middleware
   app.use(helmet());
+
+  // Dynamic CORS configuration allowing localhost, Vercel, and Render deployments
   app.use(cors({
-    origin: config.frontendUrl,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like curl, postman, server-to-server)
+      if (!origin) return callback(null, true);
+      if (
+        config.frontendUrl === '*' ||
+        origin === config.frontendUrl ||
+        origin === 'http://localhost:5173' ||
+        origin === 'http://localhost:3000' ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.onrender.com') ||
+        origin.endsWith('.netlify.app')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
