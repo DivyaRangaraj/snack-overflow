@@ -61,9 +61,20 @@ export const createRequest = async (req: Request, res: Response, next: NextFunct
         },
       });
 
-      // Notify all admins of the new snack request
+      // 1. Notify the submitting member confirming their request was received
+      await tx.notification.create({
+        data: {
+          userId,
+          requestId: created.id,
+          title: 'Request Submitted 📥',
+          message: `Your request for "${created.snackName}" was received and is pending admin review.`,
+          type: 'REQUEST_SUBMITTED',
+        },
+      });
+
+      // 2. Notify all admins of the new snack request (excluding submitting user if they are admin)
       const admins = await tx.user.findMany({
-        where: { role: 'ADMIN' },
+        where: { role: 'ADMIN', id: { not: userId } },
         select: { id: true },
       });
 
@@ -291,6 +302,19 @@ export const approveRequest = async (req: Request, res: Response, next: NextFunc
         },
       });
 
+      // 6. Also notify reviewing admin
+      if (adminId !== request.userId) {
+        await tx.notification.create({
+          data: {
+            userId: adminId,
+            requestId: request.id,
+            title: 'Request Approved ✅',
+            message: `You approved ${request.snackName} with ${body.quantity} units for the pantry.`,
+            type: 'REQUEST_APPROVED',
+          },
+        });
+      }
+
       return { request: updatedRequest, snack: newSnack, notification };
     });
 
@@ -352,6 +376,19 @@ export const declineRequest = async (req: Request, res: Response, next: NextFunc
           type: 'REQUEST_DECLINED',
         },
       });
+
+      // 4. Also notify reviewing admin
+      if (adminId !== request.userId) {
+        await tx.notification.create({
+          data: {
+            userId: adminId,
+            requestId: request.id,
+            title: 'Request Declined ❌',
+            message: `You declined the request for ${request.snackName}.`,
+            type: 'REQUEST_DECLINED',
+          },
+        });
+      }
 
       return { request: updatedRequest, notification };
     });

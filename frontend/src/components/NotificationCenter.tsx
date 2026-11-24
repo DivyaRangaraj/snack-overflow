@@ -13,11 +13,11 @@ export function NotificationCenter() {
   const containerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
-  // Poll for notifications every 10 seconds
+  // Poll for notifications every 3 seconds for fast real-time updates
   const { data, isLoading } = useQuery({
     queryKey: ['notifications'],
     queryFn: () => notificationsApi.list({ limit: 15 }),
-    refetchInterval: 10000,
+    refetchInterval: 3000,
   });
 
   const unreadCount = data?.unreadCount ?? 0;

@@ -193,7 +193,7 @@ describe('Snack Request & Approval Workflow', () => {
 
     // Verify member notification
     const notifs = await prisma.notification.findMany({
-      where: { userId: member2Id, requestId: declineId },
+      where: { userId: member2Id, requestId: declineId, type: 'REQUEST_DECLINED' },
     });
     expect(notifs.length).toBe(1);
     expect(notifs[0].message).toContain('Not included in the current pantry budget.');
@@ -220,7 +220,7 @@ describe('Snack Request & Approval Workflow', () => {
 
     // Verify member notification
     const memberNotifs = await prisma.notification.findMany({
-      where: { userId: member1Id, requestId: createdRequestId },
+      where: { userId: member1Id, requestId: createdRequestId, type: 'REQUEST_APPROVED' },
     });
     expect(memberNotifs.length).toBe(1);
     expect(memberNotifs[0].type).toBe('REQUEST_APPROVED');

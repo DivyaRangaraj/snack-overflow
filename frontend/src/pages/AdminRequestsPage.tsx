@@ -38,6 +38,7 @@ export function AdminRequestsPage() {
         page,
         limit: 15,
       }),
+    refetchInterval: 4000,
   });
 
   const requests = data?.requests ?? [];
@@ -182,6 +183,8 @@ export function AdminRequestsPage() {
           onSuccess={() => {
             setApprovingRequest(null);
             queryClient.invalidateQueries({ queryKey: ['admin-requests'] });
+            queryClient.invalidateQueries({ queryKey: ['admin-requests-count'] });
+            queryClient.invalidateQueries({ queryKey: ['my-requests'] });
             queryClient.invalidateQueries({ queryKey: ['snacks'] });
             queryClient.invalidateQueries({ queryKey: ['summary'] });
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
@@ -197,6 +200,8 @@ export function AdminRequestsPage() {
           onSuccess={() => {
             setDecliningRequest(null);
             queryClient.invalidateQueries({ queryKey: ['admin-requests'] });
+            queryClient.invalidateQueries({ queryKey: ['admin-requests-count'] });
+            queryClient.invalidateQueries({ queryKey: ['my-requests'] });
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
           }}
         />

@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <radialGradient id="studio-bg" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="70%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#f1f5f9" />
+    </radialGradient>
+    
+    <!-- Metallic Can Gradient -->
+    <linearGradient id="can-metallic" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="15%" stop-color="#e2e8f0" />
+      <stop offset="35%" stop-color="#ffffff" />
+      <stop offset="60%" stop-color="#cbd5e1" />
+      <stop offset="85%" stop-color="#94a3b8" />
+      <stop offset="100%" stop-color="#64748b" />
+    </linearGradient>
+
+    <!-- Red Bull Deep Blue Gradient -->
+    <linearGradient id="rb-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <!-- Red Bull Silver Quadrant Gradient -->
+    <linearGradient id="rb-silver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f1f5f9" />
+      <stop offset="50%" stop-color="#cbd5e1" />
+      <stop offset="100%" stop-color="#94a3b8" />
+    </linearGradient>
+
+    <!-- Bull Red Gradient -->
+    <linearGradient id="bull-red" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#b91c1c" />
+    </linearGradient>
+
+    <!-- Sun Yellow Gradient -->
+    <radialGradient id="sun-gold" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="60%" stop-color="#eab308" />
+      <stop offset="100%" stop-color="#ca8a04" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Studio White/Grey Neutral Backing -->
+  <rect width="400" height="300" fill="url(#studio-bg)" />
+  
+  <!-- Subtle blue energy glow in background -->
+  <circle cx="200" cy="145" r="110" fill="#3b82f6" opacity="0.08" filter="blur(28px)" />
+  
+  <!-- Ground Shadow -->
+  <ellipse cx="200" cy="272" rx="46" ry="9" fill="#000000" opacity="0.22" filter="blur(5px)" />
+  
+  <!-- Slim 250ml Aluminum Can -->
+  <g transform="translate(145, 26)">
+    <!-- Top Rim Metallic Lip -->
+    <ellipse cx="55" cy="14" rx="46" ry="12" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5" />
+    <ellipse cx="55" cy="13" rx="38" ry="8.5" fill="#64748b" />
+    
+    <!-- Pull Tab -->
+    <g transform="translate(55, 12)">
+      <ellipse cx="0" cy="0" rx="14" ry="4" fill="#94a3b8" />
+      <circle cx="-5" cy="0" r="2.5" fill="#475569" />
+      <rect x="2" y="-1.5" width="8" height="3" rx="1" fill="#cbd5e1" />
+    </g>
+    
+    <!-- Top Neck Taper -->
+    <path d="M 9 22 L 101 22 L 98 14 L 12 14 Z" fill="url(#can-metallic)" opacity="0.9" />
+
+    <!-- Can Cylinder Body (Clip Path for Quad Design) -->
+    <clipPath id="can-body-clip">
+      <rect x="9" y="22" width="92" height="216" rx="6" />
+    </clipPath>
+
+    <!-- Clipped Can Graphics -->
+    <g clip-path="url(#can-body-clip)">
+      <!-- Base Cylinder Metallic -->
+      <rect x="9" y="22" width="92" height="216" fill="url(#can-metallic)" />
+
+      <!-- Quadrant 1 (Top Left): Deep Blue -->
+      <polygon points="9,22 101,22 9,120" fill="url(#rb-blue)" />
+
+      <!-- Quadrant 2 (Top Right): Silver Metallic -->
+      <polygon points="101,22 101,120 9,120" fill="url(#rb-silver)" opacity="0.85" />
+
+      <!-- Quadrant 3 (Bottom Left): Silver Metallic -->
+      <polygon points="9,120 101,120 9,218" fill="url(#rb-silver)" opacity="0.85" />
+
+      <!-- Quadrant 4 (Bottom Right): Deep Blue -->
+      <polygon points="101,120 101,238 9,218" fill="url(#rb-blue)" />
+
+      <!-- Golden Sun Disc in Center -->
+      <circle cx="55" cy="120" r="22" fill="url(#sun-gold)" stroke="#ca8a04" stroke-width="0.8" />
+
+      <!-- Left Charging Red Bull Silhouette -->
+      <path d="M 44 116 C 42 113 36 112 32 114 C 28 116 26 120 22 121 C 25 123 30 123 33 121 C 35 124 38 126 42 124 C 44 122 47 119 44 116 Z" fill="url(#bull-red)" />
+      <!-- Horns & Head -->
+      <path d="M 46 114 C 48 112 51 113 52 115 C 50 116 48 117 46 116 Z" fill="#dc2626" />
+      <path d="M 47 112 C 49 110 52 111 53 113" stroke="#fef08a" stroke-width="0.8" fill="none" />
+
+      <!-- Right Charging Red Bull Silhouette -->
+      <path d="M 66 116 C 68 113 74 112 78 114 C 82 116 84 120 88 121 C 85 123 80 123 77 121 C 75 124 72 126 68 124 C 66 122 63 119 66 116 Z" fill="url(#bull-red)" />
+      <!-- Horns & Head -->
+      <path d="M 64 114 C 62 112 59 113 58 115 C 60 116 62 117 64 116 Z" fill="#dc2626" />
+      <path d="M 63 112 C 61 110 58 111 57 113" stroke="#fef08a" stroke-width="0.8" fill="none" />
+
+      <!-- Red Bull Logo Typography -->
+      <g transform="translate(55, 78)">
+        <text x="0" y="0" font-family="'Inter', 'Arial Black', sans-serif" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="-0.5" stroke="#dc2626" stroke-width="0.6" paint-order="stroke fill">
+          Red Bull
+        </text>
+      </g>
+
+      <!-- ENERGY DRINK Label -->
+      <g transform="translate(55, 162)">
+        <rect x="-38" y="-9" width="76" height="15" rx="3" fill="#ffffff" opacity="0.95" />
+        <text x="0" y="2.5" font-family="'Inter', sans-serif" font-size="7.5" font-weight="900" fill="#0f172a" text-anchor="middle" letter-spacing="1">
+          ENERGY DRINK
+        </text>
+      </g>
+
+      <!-- Subtitle Tagline -->
+      <text x="55" y="186" font-family="'Inter', sans-serif" font-size="5.5" font-weight="700" fill="#ffffff" opacity="0.9" text-anchor="middle" letter-spacing="0.3">
+        Vitalizes body and mind.
+      </text>
+
+      <text x="55" y="210" font-family="'Inter', sans-serif" font-size="6.5" font-weight="800" fill="#ffffff" opacity="0.8" text-anchor="middle" letter-spacing="0.5">
+        250 ml
+      </text>
+
+      <!-- Cylindrical 3D Specular Highlight -->
+      <rect x="22" y="22" width="10" height="216" fill="#ffffff" opacity="0.35" />
+      <rect x="28" y="22" width="4" height="216" fill="#ffffff" opacity="0.6" />
+      <rect x="88" y="22" width="13" height="216" fill="#000000" opacity="0.22" />
+    </g>
+
+    <!-- Bottom Rim Taper -->
+    <ellipse cx="55" cy="236" rx="46" ry="9" fill="#94a3b8" />
+    <ellipse cx="55" cy="238" rx="42" ry="7" fill="#64748b" />
+  </g>
+</svg>

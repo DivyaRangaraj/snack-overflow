@@ -35,6 +35,7 @@ export function MyRequestsPage() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['my-requests', statusFilter],
     queryFn: () => requestsApi.my({ status: statusFilter || undefined, limit: 50 }),
+    refetchInterval: 4000,
   });
 
   const requests = data?.requests ?? [];
