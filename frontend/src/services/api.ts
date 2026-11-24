@@ -18,7 +18,14 @@ import type {
   Category,
 } from '../types';
 
-const rawBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const defaultApiUrl =
+  typeof window !== 'undefined' &&
+  window.location.hostname !== 'localhost' &&
+  window.location.hostname !== '127.0.0.1'
+    ? 'https://snack-overflow-api-087z.onrender.com'
+    : 'http://localhost:3001';
+
+const rawBase = import.meta.env.VITE_API_URL || defaultApiUrl;
 const API_BASE = (rawBase.startsWith('http://') || rawBase.startsWith('https://'))
   ? rawBase.replace(/\/+$/, '')
   : `https://${rawBase}`.replace(/\/+$/, '');

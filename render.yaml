@@ -32,10 +32,7 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: snack-overflow-api
-          property: host
+        value: https://snack-overflow-api-087z.onrender.com
     routes:
       - type: rewrite
         source: /*
